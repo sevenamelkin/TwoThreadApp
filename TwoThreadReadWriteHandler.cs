@@ -10,23 +10,28 @@ namespace TwoThreadWriteApp
 {
     public class TwoThreadReadWriteHandler
     {
-        private ListBox _listBox;
-        private Label _label;
+        private readonly ListBox _listBox;
+        private readonly ProgressBar _progressBar;
+        private readonly Label _label;
         private int _countFiles;
         private List<DirectoryFiles> _directoryFiles;
         private Thread _thread2;
 
-        public TwoThreadReadWriteHandler(ListBox listBox, Label label)
+        public TwoThreadReadWriteHandler(ListBox listBox, Label label, ProgressBar progressBar)
         {
             _listBox = listBox;
             _label = label;
+            _progressBar = progressBar;
         }
 
         public void Copy(string sourceDirectory, string targetDirectory)
         {
+            _countFiles = 0;
             var stopWatch = new Stopwatch();
             var diSource = new DirectoryInfo(sourceDirectory);
             _countFiles = diSource.GetFiles("*.*", SearchOption.AllDirectories).Length;
+            _progressBar.Maximum = _countFiles;
+            _progressBar.Step = 1;
             var diTarget = new DirectoryInfo(targetDirectory);
             _directoryFiles = new List<DirectoryFiles>();
             var thread1 = new Thread(() => GetInfo(diSource, diTarget));
@@ -35,6 +40,7 @@ namespace TwoThreadWriteApp
             stopWatch.Start();
 
             _directoryFiles.Clear();
+            _listBox.Items.Clear();
             _thread2 = null;
         }
 
@@ -77,6 +83,7 @@ namespace TwoThreadWriteApp
                     File.WriteAllBytes(Path.Combine(directoryFile.SubDirectory.FullName, directoryFile.File.Name), fileStream);
                     i++;
                     _label.Invoke((Action)(() => _label.Text = $"{i}/{_countFiles}"));
+                    _progressBar.Invoke((Action)(() => _progressBar.PerformStep()));
                 }
             }
             catch (Exception e)
