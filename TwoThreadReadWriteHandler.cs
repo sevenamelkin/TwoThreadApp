@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace TwoThreadWriteApp
 {
     public class TwoThreadReadWriteHandler
     {
+        private ListBox _listBox;
         private List<DirectoryFiles> _directoryFiles;
+        private Thread _thread2;
 
-        public Thread Thread2;
+        public TwoThreadReadWriteHandler(ListBox listBox)
+        {
+            _listBox = listBox;
+        }
 
-        public string Copy(string sourceDirectory, string targetDirectory)
+        private void AddItemToListBox(string item)
+        {
+            _listBox.Items.Add(item);
+        }
+
+        public void Copy(string sourceDirectory, string targetDirectory)
         {
             var source = @"\\192.168.150.101\\deploy";
             var target = $"C:\\Users\\amelkin-sa\\OneDrive\\Рабочий стол\\res2";
-
             var stopWatch = new Stopwatch();
             var diSource = new DirectoryInfo(source);
             var diTarget = new DirectoryInfo(target);
@@ -25,32 +36,14 @@ namespace TwoThreadWriteApp
 
             thread1.Start();
             stopWatch.Start();
-            while (true)
-            {
-                if (Thread2 == null)
-                {
-                    Thread.Sleep(2000);
-                    continue;
-                }
-                if (!Thread2.IsAlive)
-                {
-                    continue;
-                }
-                Thread2.Join();
-                stopWatch.Stop();
-                TimeSpan timeTaken = stopWatch.Elapsed;
-                string foo = "Time taken: " + timeTaken.ToString(@"m\:ss\.fff");
-                return foo;
-            }
 
-           
-            
             _directoryFiles.Clear();
-            Thread2 = null;
+            _thread2 = null;
         }
 
-        public void GetInfo(DirectoryInfo source, DirectoryInfo target)
+        private void GetInfo(DirectoryInfo source, DirectoryInfo target)
         {
+            int i = 0;
             foreach (var file in source.GetFiles())
             {
                 var directoryFiles = new DirectoryFiles()
@@ -58,24 +51,28 @@ namespace TwoThreadWriteApp
                     File = file,
                     SubDirectory = target
                 };
-                //info
+                var fileName = $"Имя копируемого файла: {file.Name}";
+                _listBox.Invoke((Action)(() => _listBox.Items.Add(fileName)));
                 _directoryFiles.Add(directoryFiles);
-                if (Thread2 == null)
+                if (_thread2 == null)
                 {
-                    Thread2 = new Thread(WriteFiles);
-                    Thread2.Start();
+                    _thread2 = new Thread(WriteFiles);
+                    _thread2.Start();
                 }
             }
 
             foreach (var diSourceSubDir in source.GetDirectories())
             {
+                var catalogName = $"Имя копируемого каталога: {diSourceSubDir.Name}";
+                _listBox.Invoke((Action)(() => _listBox.Items.Add(catalogName)));
                 var nextTargetSubDir =
                     target.CreateSubdirectory(diSourceSubDir.Name);
                 GetInfo(diSourceSubDir, nextTargetSubDir);
             }
         }
 
-        public void WriteFiles()
+
+        private void WriteFiles()
         {
             try
             {

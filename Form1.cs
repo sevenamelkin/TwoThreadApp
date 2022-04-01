@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 
 namespace TwoThreadWriteApp
@@ -10,15 +9,12 @@ namespace TwoThreadWriteApp
         public Form1()
         {
             InitializeComponent();
-            _readWriteHandler = new TwoThreadReadWriteHandler();
+            _readWriteHandler = new TwoThreadReadWriteHandler(listBox1);
         }
 
         private void button1_Click(object sender, EventArgs e)
         { 
-           var gg = _readWriteHandler.Copy(textBox1.Text, textBox2.Text);
-           textBox1.Text = gg;
+           _readWriteHandler.Copy(textBox1.Text, textBox2.Text);
         }
-
-        
     }
 }
