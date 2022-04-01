@@ -35,6 +35,7 @@ namespace TwoThreadWriteApp
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -84,14 +85,24 @@ namespace TwoThreadWriteApp
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(422, 25);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(366, 420);
+            this.listBox1.Size = new System.Drawing.Size(366, 394);
             this.listBox1.TabIndex = 5;
+            // 
+            // label3
+            // 
+            this.label3.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.Location = new System.Drawing.Point(422, 422);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(228, 23);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "label3";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -103,6 +114,8 @@ namespace TwoThreadWriteApp
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+
+        private System.Windows.Forms.Label label3;
 
         private System.Windows.Forms.ListBox listBox1;
 
