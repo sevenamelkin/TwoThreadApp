@@ -27,7 +27,6 @@ namespace TwoThreadWriteApp
         public void Copy(string sourceDirectory, string targetDirectory)
         {
             _countFiles = 0;
-            var stopWatch = new Stopwatch();
             var diSource = new DirectoryInfo(sourceDirectory);
             _countFiles = diSource.GetFiles("*.*", SearchOption.AllDirectories).Length;
             _progressBar.Maximum = _countFiles;
@@ -37,7 +36,6 @@ namespace TwoThreadWriteApp
             var thread1 = new Thread(() => GetInfo(diSource, diTarget));
 
             thread1.Start();
-            stopWatch.Start();
 
             _directoryFiles.Clear();
             _listBox.Items.Clear();
